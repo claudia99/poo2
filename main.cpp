@@ -6,14 +6,15 @@ class nod
 protected:
     int info;
     nod* next;
+    static int nrnod;
 public:
     nod()
-    {
+    {   nrnod++;
         this->info=0;
         this->next=NULL;
     }
     nod(int info,nod* next)
-    {
+    {   nrnod++;
         this->info=info;
         this->next=next;
     }
@@ -21,6 +22,10 @@ public:
     {
         this->info=NULL;
         this->next=NULL;
+    }
+    static void noduri()
+    {
+        cout<<endl<<"S-au creeat "<<nrnod<<" noduri"<<endl;
     }
     virtual void citire(istream& in)
     {
@@ -44,6 +49,7 @@ public:
     }
     friend class ldi;
 };
+int nod::nrnod;
 class nod_dublu:public nod
 {
 protected:
@@ -55,7 +61,7 @@ public:
     {
 
     }
-    virtual void citire(istream& in)
+     void citire(istream& in)
     {
         nod::citire(in);
         cout<<"sunt aici";
@@ -65,7 +71,7 @@ public:
         d.citire(in);
         return in;
     }
-    virtual void afis(ostream& out)
+     void afis(ostream& out)
     {
         nod::afis(out);
         // out<<"sunt in nod_dublu"<<endl;
@@ -90,10 +96,15 @@ class ldi
 {
 protected:
     nod_dublu* prim;
-    nod_dublu* ultim;
+    static int n;
+    //nod_dublu* ultim;
 public:
     ldi();
-    ldi(nod_dublu* p,nod_dublu* u);
+    ldi(nod_dublu* p);
+    static void nrlistedi()
+    {
+        cout<<endl<<"Exista "<<n<<" liste"<<endl;
+    }
     int isempty();
     nod_dublu* caut(int info);
     void adaug(int n);
@@ -111,9 +122,10 @@ public:
     }
     void inserare(int n);
     void traversare();
-    ldi* insertionsort();
+    ldi insertionsort();
 };
-ldi* ldi::insertionsort()
+int ldi::n;
+ldi ldi::insertionsort()
 {
     nod*p=prim;
     int nr=0;
@@ -134,7 +146,7 @@ ldi* ldi::insertionsort()
         p=p->next;
     }
     // cout<<*ls;
-    return ls;
+    return *ls;
 }
 void ldi::traversare()
 {
@@ -214,12 +226,14 @@ void ldi::inserare(int n)
 ldi::ldi()
 {
     prim=NULL;
-    ultim=NULL;
+    n++;
+//    ultim=NULL;
 }
-ldi::ldi(nod_dublu* p,nod_dublu* u)
+ldi::ldi(nod_dublu* p)
 {
     prim=p;
-    ultim=u;
+    n++;
+   // ultim=u;
 }
 int ldi:: isempty()
 {
@@ -251,10 +265,12 @@ void ldi::adaug(int n)
 }
 void ldi::citire(istream& in)
 {
-    cout<<"Cate elemente are lista? ";
+    cout<<endl<<"Cate elemente are lista? ";
     int nr,x;
     in>>nr;
-    if(x<0)
+    if(nr==0)
+        return;
+    if(nr<0)
         cout<<"Numar invalid";
     else
     {
@@ -271,7 +287,7 @@ void ldi::afis(ostream& out)
 
     nod* p=prim;
     if(isempty()==0)
-        out<<"lista e goala";
+        out<<"lista e goala"<<endl;
     else
     {
         while(p!=NULL)
@@ -284,13 +300,21 @@ void ldi::afis(ostream& out)
 class lsi:public ldi
 {
 public:
+    lsi(nod_dublu* prim);
     lsi();
-
     void citire(istream& in);
     friend istream& operator<<(istream& in,lsi& ls);
     void afis(ostream& out);
     friend ostream& operator<<(ostream& out,lsi& ls);
 };
+lsi::lsi()
+{
+
+}
+lsi::lsi(nod_dublu* prim):ldi(prim)
+{
+
+}
 void lsi::citire(istream&in)
 {
     ldi::citire(in);
@@ -317,46 +341,99 @@ void menu_output()
     cout<<endl<<"MENIU"<<endl;
     cout<<"---------------------------------------"<<endl;
     cout<<endl;
-    cout<<"1. Citirea unei liste dublu inlantuite"<<endl;
-    cout<<"2. Adaugare elemente in lista dublu inlantuita"<<endl;
-    cout<<"3. Afisarea unei liste dublu inlantuite"<<endl;
+    cout<<"1. Citirea a n liste dublu inlantuite"<<endl;
+    cout<<"2. Adaugare elemente intr-o lista dublu inlantuita"<<endl;
+    cout<<"3. Afisarea a n liste dublu inlantuite"<<endl;
     cout<<"4. Citirea unei liste simplu inlantuite"<<endl;
     cout<<"5. Adaugare elemente in lista simplu inlantuita"<<endl;
     cout<<"6. Sortare prin insertie directa utilizand o lista dublu inlantuita"<<endl;
+    cout<<"7.test"<<endl;
     cout<<"0. Iesire"<<endl;
 }
 void menu()
 {
-    int option,ok=0;
+    int option,ok=0,nr,nrl;
     ldi *l;
-    l=new ldi;
+    lsi *ls;
     do
-    {   menu_output();
-        cout<<endl<<"Introduceti numarul optiunii ";
+    {
+        menu_output();
+        cout<<endl<<"Introduceti numarul optiunii: ";
         cin>>option;
-        if(option<0||option>6)
+        ///sa nu uit sa modific
+        if(option<0||option>7)
             cout<<"Selectie invalida"<<endl;
         if(option==0)
             cout<<endl<<"EXIT"<<endl;
         if(option==1)
-            {cin>>*l; ok=1;}
+        {
+            cout<<endl<<"Introduceti numarul de liste citite: ";
+            cin>>nr;
+            l=new ldi[nr+1];
+            for(int i=1; i<=nr; i++)
+            {
+                cout<<endl<<"Citesc lista "<<i;
+                cin>>l[i];
+            }
+            ok=1;
+        }
         if(option==3)
-            {if(ok==1)
-                cout<<*l;
-            else cout<<"Nu a fost efectuata citirea"<<endl;}
+        {
+            if(ok==1)
+                for(int i=1; i<=nr; i++)
+                {
+                    cout<<endl<<"Lista "<<i<<endl;
+                    cout<<l[i];
+                }
+            else
+                cout<<"Nu a fost efectuata citirea"<<endl;
+        }
         if(option==2)
-            cin>>*l;
+        {
+            cout<<"Introduceti lista in care adaug elemente: ";
+            int a;
+            cin>>a;
+            if(a<1||a>nr)
+                cout<<"Nu exista aceasta lista"<<endl;
+            else
+                cin>>l[a];
+        }
         if(option==6)
         {
             if(ok==0)
                 cout<<"Nu a fost efectuata citirea"<<endl<<endl;
-            else{l=l->insertionsort();
-            cout<<*l;}
+            else
+            {
+                cout<<"Introduceti lista pe care aplic insertion sort: ";
+                int a;
+                cin>>a;
+                if(a<1||a>nr)
+                    cout<<"Nu exista aceasta lista"<<endl;
+                else
+                {
+                    l[a]=l[a].insertionsort();
+                    cout<<l[a];
+                }
+            }
         }
+            if(option==4)
+            {
+                cout<<"Cate liste simplu inlantuite citesc? ";
+                cin>>nrl;
+                ls=new lsi[nrl+1];
+                for(int i=1;i<=nrl;i++)
+                    {
+                        cout<<endl<<"Citesc lista "<<i<<endl;
+                        cin>>ls[i];
+                    }
 
-
-    system("pause");
-    system("cls");
+            }
+        if(option==5) ///test cate liste creez
+            ldi::nrlistedi();
+        if(option==7)
+            nod::noduri();
+        system("pause");
+        system("cls");
     }
     while(option!=0);
 }
@@ -376,7 +453,7 @@ int main()
     cout<<endl;
     //l->inserare(10);
 //    cout<<*l;
-   // l->inserare(20);
+    // l->inserare(20);
     //cout<<*l;
     // int n=10;   l->inserare(n,*l);
     // l=l->insertionsort();
