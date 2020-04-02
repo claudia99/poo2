@@ -18,6 +18,20 @@ public:
         this->info=info;
         this->next=next;
     }
+    nod(const nod& n)//copy constructor
+    {
+        cout<<"sunt aici";
+        this->info=n.info;
+        this->next=n.next;
+        nrnod++;
+
+    }
+     nod& operator!=(nod& n)
+    {   cout<<"SUNT IN =";
+        info=n.info;
+        next=n.next;
+        return (*this);
+    }
     ~nod()
     {
         this->info=NULL;
@@ -57,14 +71,12 @@ protected:
 public:
     nod_dublu();
     nod_dublu(int info,nod* next,nod* ant);
-    ~nod_dublu()
-    {
-
-    }
+    ~nod_dublu();
+    nod_dublu(nod_dublu& n);
      void citire(istream& in)
     {
         nod::citire(in);
-        cout<<"sunt aici";
+       // cout<<"sunt aici";
     }
     friend istream& operator>>(istream& in,nod_dublu& d)
     {
@@ -83,7 +95,10 @@ public:
     }
     friend class ldi;
 };
+nod_dublu::~nod_dublu()
+{
 
+}
 nod_dublu::nod_dublu()
 {
     ante=NULL;
@@ -91,6 +106,11 @@ nod_dublu::nod_dublu()
 nod_dublu::nod_dublu(int info,nod* next,nod* ant):nod(info,next)
 {
     ante=ant;
+}
+nod_dublu::nod_dublu(nod_dublu &n)
+{cout<<"sunt in copy const la nod dublu";
+    ante=n.ante;
+
 }
 class ldi
 {
@@ -101,6 +121,14 @@ protected:
 public:
     ldi();
     ldi(nod_dublu* p);
+    ldi(ldi&l)
+    {
+        prim=l.prim;
+    }
+    ~ldi()
+    {
+
+    }
     static void nrlistedi()
     {
         cout<<endl<<"Exista "<<n<<" liste"<<endl;
@@ -439,7 +467,7 @@ void menu()
 }
 int main()
 {
-    menu();
+    //menu();
     // nod *n;
     // n=new nod;
 //    cin>>*n;
@@ -460,5 +488,35 @@ int main()
     //cout<<endl<<*l;
 //    cin>>*l;
 //    cout<<*l;
-    return 0;
+cout<<"testez copy constr in nod"<<endl;
+nod *a=new nod;
+//nod*b=new nod;
+nod p1;
+cin>>p1;
+cin>>*a;
+nod::noduri();
+cout<<p1;
+nod* b= new nod(p1);
+cout<<"Copiez valoarea:"<<endl;
+cout<<*b;
+nod::noduri();
+nod*c=new nod;
+c!=a;
+cout<<endl<<"I am atribuit valoarea"<<endl;
+nod::noduri();
+cout<<*c;
+//cout<<"Testez copy constructor"<<endl;
+//nod_dublu *p=new nod_dublu;
+//cin>>*p;
+//nod_dublu *r(p);
+//
+//cout<<*r;
+//cout<<endl<<"Testez copy constructor ldi"<<endl;
+//ldi *li=new ldi;
+//cin>>*li;
+//ldi *ls=new ldi;
+//cin>>*ls;
+//ls=li;
+//cout<<*ls;
+return 0;
 }
