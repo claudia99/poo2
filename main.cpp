@@ -20,14 +20,14 @@ public:
     }
     nod(const nod& n)//copy constructor
     {
-        cout<<"sunt aici";
+        cout<<"SUNT AICI";
         this->info=n.info;
         this->next=n.next;
         nrnod++;
 
     }
-     nod& operator!=(nod& n)
-    {   cout<<"SUNT IN =";
+     nod& operator=(nod& n)
+    {   cout<<"SUNT IN = in NOD";
         info=n.info;
         next=n.next;
         return (*this);
@@ -39,7 +39,7 @@ public:
     }
     static void noduri()
     {
-        cout<<endl<<"S-au creeat "<<nrnod<<" noduri"<<endl;
+        cout<<endl<<"S-au creat "<<nrnod<<" noduri"<<endl;
     }
     virtual void citire(istream& in)
     {
@@ -93,6 +93,7 @@ public:
         d.afis(out);
         return out;
     }
+    nod_dublu& operator=(nod_dublu& n);
     friend class ldi;
 };
 nod_dublu::~nod_dublu()
@@ -107,10 +108,17 @@ nod_dublu::nod_dublu(int info,nod* next,nod* ant):nod(info,next)
 {
     ante=ant;
 }
-nod_dublu::nod_dublu(nod_dublu &n)
+nod_dublu::nod_dublu(nod_dublu &n):nod(n)
 {cout<<"sunt in copy const la nod dublu";
     ante=n.ante;
 
+}
+nod_dublu& nod_dublu::operator=(nod_dublu& n)
+{
+  // cout<<"NU STIU CE FAC";
+
+    this->nod::operator=(n);
+    return *this;
 }
 class ldi
 {
@@ -123,11 +131,33 @@ public:
     ldi(nod_dublu* p);
     ldi(ldi&l)
     {
-        prim=l.prim;
+        nod_dublu* temp=l.prim;
+        this->prim=new nod_dublu;
+        (this->prim)->info=temp->info;
+        (this->prim)->next=temp->next;
+        (this->prim)->ante=NULL;
+        nod* nou=this->prim;
+        nod* t=temp->next;
+        while(t!=NULL)
+        {
+            nou->next=new nod;
+            nou=nou->next;
+            nou->info=t->info;
+            t=t->next;
+
+        }
+        //prim=l.prim;
+        n++;
+        cout<<"sunt in copy constr de la ldi";
     }
     ~ldi()
     {
 
+    }
+    ldi& operator=(ldi& l)
+    {
+        cout<<"sunt in = in ldi";
+        this->prim=l.prim;
     }
     static void nrlistedi()
     {
@@ -150,10 +180,10 @@ public:
     }
     void inserare(int n);
     void traversare();
-    ldi insertionsort();
+    ldi& insertionsort();
 };
 int ldi::n;
-ldi ldi::insertionsort()
+ldi& ldi::insertionsort()
 {
     nod*p=prim;
     int nr=0;
@@ -439,6 +469,7 @@ void menu()
                     cout<<"Nu exista aceasta lista"<<endl;
                 else
                 {
+
                     l[a]=l[a].insertionsort();
                     cout<<l[a];
                 }
@@ -467,28 +498,8 @@ void menu()
 }
 int main()
 {
-    //menu();
-    // nod *n;
-    // n=new nod;
-//    cin>>*n;
-//    cout<<*n;
-//    nod_dublu *d;
-//    d=new nod_dublu;
-//   cin>>*d;
-//    cout<<*d;
-    //cin>>*l;
-    //l->traversare();
-    cout<<endl;
-    //l->inserare(10);
-//    cout<<*l;
-    // l->inserare(20);
-    //cout<<*l;
-    // int n=10;   l->inserare(n,*l);
-    // l=l->insertionsort();
-    //cout<<endl<<*l;
-//    cin>>*l;
-//    cout<<*l;
-cout<<"testez copy constr in nod"<<endl;
+   // menu();
+//cout<<"testez copy constr in nod"<<endl;
 nod *a=new nod;
 //nod*b=new nod;
 nod p1;
@@ -496,27 +507,38 @@ cin>>p1;
 cin>>*a;
 nod::noduri();
 cout<<p1;
-nod* b= new nod(p1);
+//nod b(p1);
+nod *b=new nod(*a);
+delete a;
 cout<<"Copiez valoarea:"<<endl;
+//cout<<*a; 
 cout<<*b;
-nod::noduri();
-nod*c=new nod;
-c!=a;
-cout<<endl<<"I am atribuit valoarea"<<endl;
-nod::noduri();
-cout<<*c;
+//nod::noduri();
+//nod *c=new nod;
+//*c=*a;
+//cout<<endl<<"I am atribuit valoarea"<<endl;
+//nod::noduri();
+//cout<<*c;
 //cout<<"Testez copy constructor"<<endl;
 //nod_dublu *p=new nod_dublu;
 //cin>>*p;
-//nod_dublu *r(p);
-//
-//cout<<*r;
-//cout<<endl<<"Testez copy constructor ldi"<<endl;
-//ldi *li=new ldi;
-//cin>>*li;
-//ldi *ls=new ldi;
-//cin>>*ls;
-//ls=li;
-//cout<<*ls;
-return 0;
+//nod_dublu p1;
+//cin>>p1;
+//nod_dublu r(p1);
+//nod*b=new nod_dublu(*p);
+//nod::noduri();
+//cout<<*b;
+//nod_dublu *c=new nod_dublu;
+//*c=*p;
+//cout<<*c;
+    ldi *l=new ldi;
+    cin>>*l;
+    ldi::nrlistedi();
+    ldi *d=new ldi(*l);
+   cout<<*d;
+   ldi::nrlistedi();
+//    ldi *f=new ldi;
+//    *d=*l;
+//    ldi::nrlistedi();
+    return 0;
 }
