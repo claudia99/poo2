@@ -22,14 +22,13 @@ public:
         this->next=next;
     }
     nod(const nod& n) //copy constructor
-    {
-        cout<<"SUNT AICI";
-        info=n.info;
-        next=n.next;
+    {   nod* newnode(NULL);
+        //cout<<"SUNT AICI";
+        newnode=new nod(n.info,n.next);
+        info=newnode->info;
+        next=newnode->next;
 //        info=n.info;
 //        next=n.next;
-//       next=new nod();
-        //*next=*(n.next);
     }
     nod& operator=(nod& n)
     {
@@ -67,7 +66,7 @@ public:
         n.afis(out);
         return out;
     }
-    friend class ldi;
+   //friend class ldi;
     friend class lsi;
 };
 int nod::nrnod;
@@ -79,7 +78,7 @@ public:
     nod_dublu();
     nod_dublu(int info,nod* next,nod* ant);
     ~nod_dublu();
-    nod_dublu(nod_dublu& n);
+    nod_dublu(const nod_dublu& n);
     void citire(istream& in)
     {
         nod::citire(in);
@@ -115,11 +114,10 @@ nod_dublu::nod_dublu(int info,nod* next,nod* ant):nod(info,next)
 {
     ante=ant;
 }
-nod_dublu::nod_dublu(nod_dublu &n):nod(n)
+nod_dublu::nod_dublu(const nod_dublu &n):nod(n)
 {
     cout<<"sunt in copy const la nod dublu";
-    ante=new nod;
-    *ante=*n.ante;
+    ante=n.ante;
 
 }
 nod_dublu& nod_dublu::operator=(nod_dublu& n)
@@ -137,39 +135,57 @@ public:
     ldi();
     ldi(nod_dublu* p);
     ldi(ldi&l)
-    {
+    { cout<<"SUNT AICI";
         nod_dublu* temp=l.prim;
         this->prim=new nod_dublu;
         (this->prim)->info=temp->info;
         (this->prim)->next=temp->next;
         (this->prim)->ante=NULL;
-        nod* nou=this->prim;
-        nod* t=temp->next;
+        nod_dublu* nou=this->prim;
+        nod_dublu* t=(nod_dublu*)temp->next;
         while(t!=NULL)
         {
-            nou->next=new nod;
-            nou=nou->next;
+            nou->next=new nod_dublu;
+            nou=(nod_dublu*)nou->next;
             nou->info=t->info;
-            t=t->next;
+            t=(nod_dublu*)t->next;
 
         }
+       // t=NULL;
         n++;
 }
     virtual ~ldi()
-    {   nod* p=prim;
+    {   nod_dublu* p=prim;
         nod*u;
         while(p!=NULL)
         {
             u=p;
-            p=p->next;
+            p=(nod_dublu*)p->next;
             delete u;
         }
-        prim=NULL;
+        delete p;
     }
     ldi& operator=(ldi& l)
     {
         cout<<"sunt in = in ldi";
-        this->prim=l.prim;
+        //this->prim=l.prim;
+        nod_dublu* temp=l.prim;
+        this->prim=new nod_dublu;
+        (this->prim)->info=temp->info;
+        (this->prim)->next=temp->next;
+        (this->prim)->ante=NULL;
+        nod_dublu* nou=this->prim;
+        nod_dublu* t=(nod_dublu*)temp->next;
+        while(t!=NULL)
+        {
+            nou->next=new nod_dublu;
+            nou=(nod_dublu*)nou->next;
+            nou->info=t->info;
+            t=(nod_dublu*)t->next;
+
+        }
+        t=NULL;
+        return *this;
     }
     static void nrlistedi()
     {
@@ -189,17 +205,17 @@ public:
         return out;
     }
     virtual void inserare(int n);
-    virtual ldi& insertionsort();
+    ldi& insertionsort();
 };
 int ldi::n;
 ldi& ldi::insertionsort()
 {
-    nod*p=prim;
+    nod_dublu*p=prim;
     int nr=0;
     while(p!=NULL)
     {
         nr++;
-        p=p->next;
+        p=(nod_dublu*)p->next;
     }
     //cout<<nr<<endl;
     p=prim;
@@ -210,7 +226,7 @@ ldi& ldi::insertionsort()
     {
         int val=p->info;
         ls->inserare(val);
-        p=p->next;
+        p=(nod_dublu*)p->next;
     }
     // cout<<*ls;
     return *ls;
@@ -218,7 +234,7 @@ ldi& ldi::insertionsort()
 
 void ldi::inserare(int n)
 {
-    nod *p=prim;
+    nod_dublu *p=prim;
     int ok=0;
     if(p==NULL)
     {
@@ -245,7 +261,7 @@ void ldi::inserare(int n)
         prim=aux;
         return;
     }
-    nod*in=new nod;
+    nod_dublu*in=new nod_dublu;
     while(p!=NULL&&ok==0)
     {
         if(p->info>n)
@@ -253,7 +269,7 @@ void ldi::inserare(int n)
         else
         {
             in=p;
-            p=p->next;
+            p=(nod_dublu*)p->next;
         }
     }
     if(ok==0||p==NULL)
@@ -305,9 +321,9 @@ void ldi::adaug(int n)
     }
     else
     {
-        nod* ptr=prim;
+        nod_dublu* ptr=prim;
         while(ptr->next!=NULL)
-            ptr=ptr->next;
+            ptr=(nod_dublu*)ptr->next;
         nod_dublu* nou=new nod_dublu;
         nou->info=n;
         nou->next=NULL;
@@ -319,7 +335,7 @@ void ldi::adaug(int n)
 }
 void ldi::citire(istream& in)
 {
-    cout<<endl<<"Cate elemente are lista? ";
+    cout<<endl<<"Cate elemente citesc? ";
     int nr,x;
     in>>nr;
     if(nr==0)
@@ -340,7 +356,7 @@ void ldi::citire(istream& in)
 void ldi::afis(ostream& out)
 {
 
-    nod* p=prim;
+    nod_dublu* p=prim;
     if(prim==NULL)
         out<<"lista e goala"<<endl;
     else
@@ -348,7 +364,7 @@ void ldi::afis(ostream& out)
         while(p!=NULL)
         {
             out<<p->info<<endl;
-            p=p->next;
+            p=(nod_dublu*)p->next;
         }
     }
 }
@@ -360,6 +376,35 @@ public:
     }
     ~lsi()
     {
+
+    }
+    lsi(const lsi&l)
+    {   cout<<"BUNA";
+        nod *p=l.prim;
+        while(p!=NULL)
+        {adaug(p->info);
+            p=p->next;}
+    }
+    lsi& operator=(lsi& l)
+    {   cout<<"AICI";
+       //this->prim=l.prim;
+        nod* temp=(nod*)l.prim;
+        this->prim=new nod_dublu;
+        (this->prim)->info=temp->info;
+        (this->prim)->next=temp->next;
+        nod* nou=this->prim;
+        nod* t=temp->next;
+        while(t!=NULL)
+        {
+            nou->next=new nod;
+            nou=nou->next;
+            nou->info=t->info;
+            t=t->next;
+
+        }
+        t=NULL;
+        return *this;
+
 
     }
     void citire(istream& in);
@@ -375,7 +420,7 @@ void lsi::inserare(int n)
     int ok=0;
     if(p==NULL)
     {
-      prim=new nod_dublu();
+       prim=new nod_dublu();
        prim->info=n;
        prim->next=NULL;
         return;
@@ -418,7 +463,7 @@ void lsi::inserare(int n)
 cout<<"LSI";
 }
 void lsi::adaug(int n)
-{
+{ cout<<"sunt in adaug lsi";
     if(prim==NULL)
     {
         prim=new nod_dublu;
@@ -443,22 +488,7 @@ void lsi::adaug(int n)
 
 void lsi::citire(istream&in)
 {
-    cout<<endl<<"Cate elemente are lista? ";
-    int nr,x;
-    in>>nr;
-    if(nr==0)
-        return;
-    if(nr<0)
-        cout<<"Numar invalid";
-    else
-    {
-        cout<<"Introduceti elementele"<<endl;
-        for(int i=0; i<nr; i++)
-        {
-            in>>x;
-            adaug(x);
-        }
-    }
+    ldi::citire(in);
     cout<<"buna";
 }
 istream& operator<<(istream& in,lsi& ls)
@@ -509,7 +539,6 @@ void menu_output()
     cout<<"1. Citirea a n liste"<<endl;
     cout<<"2. Adaugare elemente intr-o lista "<<endl;
     cout<<"3. Afisarea a n liste "<<endl;
-    //cout<<"4. Citirea unei liste simplu inlantuite"<<endl;
     cout<<"4. Afisare cate liste au fost create "<<endl;
     cout<<"5. Sortare prin insertie directa utilizand o lista dublu inlantuita"<<endl;
     cout<<"6.test"<<endl;
@@ -589,33 +618,12 @@ void menu()
                 else
                 {
                     if(typeid(*l[a])==typeid(ldi))
-                            {*l[a]=l[a]->insertionsort();
+                            {*l[a]=l[a]->insertionsort ();
                     cout<<*l[a];}
                     else cout<<"Nu este o lista dublu inlantuita. Introduceti indicele unei liste dublu inlantuite!"<<endl;
                 }
             }
         }
-//        if(option==6)
-//        //cout<<j;
-//            for(int i=1;i<=nr;i++)
-//                if(typeid(*l[i])==typeid(ldi))
-//                    cout<<"LDI";
-//                else
-//                    cout<<"LSI";
-//            if(option==4)
-//            {
-//                cout<<"Cate liste simplu inlantuite citesc? ";
-//                cin>>nrl;
-//                ls=new lsi[nrl+1];
-//                for(int i=1;i<=nrl;i++)
-//                    {
-//                        cout<<endl<<"Citesc lista "<<i<<endl;
-//                        cin>>ls[i];
-//                    }
-//
-//            }
-//
-//
         if(option==4) ///test cate liste creez
             ldi::nrlistedi();
 //        if(option==7)
@@ -627,65 +635,20 @@ void menu()
 }
 int main()
 {
-    menu();
-    ldi*ls;
-    int nrl;
-    cout<<"Cate liste simplu inlantuite citesc? ";
-                cin>>nrl;
-                ls=new ldi[nrl+1];
-                for(int i=1;i<=nrl;i++)
-                    {
-                        cout<<endl<<"Citesc lista "<<i<<endl;
-                        cin>>ls[i];
-                    }
-            for(int i=1;i<=nrl;i++)
-                    {
-                        //cout<<endl<<"Citesc lista "<<i<<endl;
-                        ls[i]=ls[i].insertionsort();
-                        cout<<ls[i];
-
-                    }
-//////cout<<"testez copy constr in nod"<<endl;
-//nod *a=new nod;
-//////nod*b=new nod;
-//nod p1;
-//cin>>p1;
-//cin>>*a;
-//nod::noduri();
-////cout<<p1;
-////nod b(p1);
-//nod b(p1);
-//cout<<b;
+   menu();
+//    ldi p1;
+//    cin>>p1;
+//    ldi s(p1);
 //
-////delete a;
-////cout<<"Copiez valoarea:"<<endl;
-//////cout<<*a;
-//////nod::noduri();
-//////nod *c=new nod;
-//////*c=*a;
-//////cout<<endl<<"I am atribuit valoarea"<<endl;
-//////nod::noduri();
-//////cout<<*c;
-//////cout<<"Testez copy constructor"<<endl;
-//////nod_dublu *p=new nod_dublu;
-//////cin>>*p;
-//////nod_dublu p1;
-//////cin>>p1;
-//////nod_dublu r(p1);
-//////nod*b=new nod_dublu(*p);
-//////nod::noduri();
-//////cout<<*b;
-//////nod_dublu *c=new nod_dublu;
-//////*c=*p;
-//////cout<<*c;
-////    ldi *l=new ldi;
-////    cin>>*l;
-////    ldi::nrlistedi();
-////    ldi *d=new ldi(*l);
-////   cout<<*d;
-////   ldi::nrlistedi();
-//////    ldi *f=new ldi;
-//////    *d=*l;
-//////    ldi::nrlistedi();
+//   // s=p1;
+//   // cout<<p1;
+//   p1.~ldi();
+//    cout<<s;
+    lsi *l=new lsi;
+    cin>>*l;
+    lsi *p(l);
+
+
+    cout<<*p;
     return 0;
 }
