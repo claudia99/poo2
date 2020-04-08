@@ -201,7 +201,7 @@ public:
     static void nrlistedi()
     {
         cout<<endl<<"Au fost create "<<n<<" liste"<<endl;
-        cout<<"(cu una in plus din cauza down castului)"<<endl;
+        cout<<"(cu nr(numarul de obiecte create) in plus din cauza down castului)"<<endl;
     }
     virtual void adaug(int n);
     virtual void afis(ostream& out);
@@ -557,7 +557,7 @@ void tip(ldi *&l,int &i)
     else
         cout<<"Caracterul introdus nu este corect"<<endl;
     ///downcast
-    lsi*ls=(lsi*)new ldi; ///se va crea o noua lista
+   lsi*ls=(lsi*)new ldi; ///se va crea o noua lista la fiecare pas
 
 }
 void menu_output()
@@ -576,7 +576,7 @@ void menu_output()
 }
 void menu()
 {
-    int option,ok=0,nr,nrl,j=0;
+    int option,ok=0,nr=0,nrl,j=0;
     ldi **l;
     do
     {
@@ -664,7 +664,10 @@ void menu()
             }
         }
         if(option==4) ///test cate liste creez
-            ldi::nrlistedi(); /// va afisa cu una in plus din cauza down castului
+            {ldi::nrlistedi(); /// va afisa cu nr in plus din cauza down castului, unde n e nr de obiecte create
+                            ///ca sa se afiseze nr real trb comentat randul de la downcast
+               cout<<"    nr= "<<nr<<endl; //nod::noduri();
+                }
 //        if(option==7)
 //            nod::noduri();
         system("pause");
@@ -675,5 +678,6 @@ void menu()
 int main()
 {
     menu();
-        return 0;
+
+    return 0;
 }
