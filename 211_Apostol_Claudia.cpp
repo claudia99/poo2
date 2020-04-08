@@ -21,10 +21,10 @@ public:
         this->info=info;
         this->next=next;
     }
-    nod(const nod& n) //copy constructor
+    nod(const nod& n)
     {
         nod* newnode;
-         cout<<"SUNT AICI";
+        // cout<<"SUNT AICI";
         newnode=new nod(n.info,n.next);
         info=newnode->info;
         next=newnode->next;
@@ -103,11 +103,11 @@ public:
 };
 nod_dublu::~nod_dublu()
 {
-    this->ante=NULL;
+    //this->ante=NULL;
 }
 nod_dublu::nod_dublu():nod()
 {
-   // ante=NULL;
+   this->ante=NULL;
 }
 nod_dublu::nod_dublu(int info,nod* next,nod* ant):nod(info,next)
 {
@@ -122,7 +122,10 @@ nod_dublu::nod_dublu(const nod_dublu &n):nod(n)
 nod_dublu& nod_dublu::operator=(nod_dublu& n)
 {
     this->nod::operator=(n);
+    this->ante=ante;
+    cout<<"aici";
     return *this;
+
 }
 class ldi
 {
@@ -669,7 +672,5 @@ void menu()
 int main()
 {
     menu();
-
-//    cout<<q;
     return 0;
 }
