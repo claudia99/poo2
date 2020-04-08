@@ -107,7 +107,7 @@ nod_dublu::~nod_dublu()
 }
 nod_dublu::nod_dublu():nod()
 {
-   this->ante=NULL;
+    this->ante=NULL;
 }
 nod_dublu::nod_dublu(int info,nod* next,nod* ant):nod(info,next)
 {
@@ -116,14 +116,14 @@ nod_dublu::nod_dublu(int info,nod* next,nod* ant):nod(info,next)
 nod_dublu::nod_dublu(const nod_dublu &n):nod(n)
 {
     //cout<<"sunt in copy const la nod dublu";
-    //ante=n.ante;
+    ante=n.ante;
 
 }
 nod_dublu& nod_dublu::operator=(nod_dublu& n)
 {
     this->nod::operator=(n);
     this->ante=ante;
-    cout<<"aici";
+    //cout<<"aici";
     return *this;
 
 }
@@ -157,19 +157,22 @@ public:
         n++;
     }
     virtual ~ldi()
-    {  // cout<<"destructor ldi";
+    {
+
         //cout<<*prim;
-if(typeid(*this)==typeid(ldi))
-        {nod_dublu* p=prim;//cout<<*p;;
-       // if(p==NULL)
-        nod_dublu*u;
-        while(p!=NULL)
-        {
-            u=p;
-            p=(nod_dublu*)p->next;
-            delete u;
-        }
-        }
+        cout<<"destructor ldi";
+            nod_dublu* p=prim;//cout<<*p;;
+            // if(p==NULL)
+            nod_dublu* u;
+
+            while(p!=NULL)
+            {
+
+                u=(nod_dublu*)p->next;
+                delete p;
+                p=u;
+            }
+            prim=NULL;
 
         //delete p;
     }
@@ -318,7 +321,7 @@ ldi::ldi()
 {
     prim=NULL;
     n++;
-   // cout<<"constructor ldi"<<endl;
+    // cout<<"constructor ldi"<<endl;
 //    ultim=NULL;
 }
 ldi::ldi(nod_dublu* p)
@@ -397,7 +400,6 @@ public:
     }
     ~lsi()
     {
-       // cout<<"destructor lsi";
     }
     lsi(const lsi&l)
     {
@@ -554,8 +556,8 @@ void tip(ldi *&l,int &i)
     }
     else
         cout<<"Caracterul introdus nu este corect"<<endl;
-   ///downcast
-   lsi*ls=(lsi*)new ldi; ///se va crea o noua lista
+    ///downcast
+    lsi*ls=(lsi*)new ldi; ///se va crea o noua lista
 
 }
 void menu_output()
@@ -614,7 +616,8 @@ void menu()
                     cout<<endl<<"Lista "<<i;
                     if(typeid(*l[i])==typeid(ldi))
                         cout<<" (dublu inlanduita)"<<endl;
-                    else cout<<" (simplu inlantuita)"<<endl;
+                    else
+                        cout<<" (simplu inlantuita)"<<endl;
                     cout<<*l[i];
                 }
             else
@@ -672,5 +675,5 @@ void menu()
 int main()
 {
     menu();
-    return 0;
+        return 0;
 }
